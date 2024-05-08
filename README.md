@@ -19,3 +19,7 @@ cmake --build .
 ```
 
 编译后的文件将生成于`.\bin`目录下。
+
+## 实验一文件使用方法
+
+usage: `.\bin\lab1.exe [vertex_shader_path] [fragment_shader_path]`

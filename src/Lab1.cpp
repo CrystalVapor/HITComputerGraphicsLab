@@ -13,6 +13,10 @@ const unsigned int SCR_HEIGHT = 600;
 void onRender(FGLVertexArray_I vertexArrayObj, const std::shared_ptr<FShader> &shader);
 
 int main(int argc, char *argv[]){
+    if(argc!=3){
+        std::cerr << "Usage: " << argv[0] << " <vertex shader path> <fragment shader path>" << std::endl;
+        return -1;
+    }
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -59,8 +63,8 @@ int main(int argc, char *argv[]){
     glEnableVertexAttribArray(0);
 
     // create shader
-    auto shader = FShaderFactory::CreateShader("../res/Shaders/Vertex/lab1_vertex.glsl",
-                                               "../res/Shaders/Fragment/lab1_fragment.glsl");
+    auto shader = FShaderFactory::CreateShader(argv[1],
+                                               argv[2]);
 
 
 
