@@ -1,0 +1,9 @@
+[submodule "library/stb"]
+	path = library/stb
+	url = https://github.com/CrystalVapor/stb.git
+[submodule "library/glm"]
+	path = library/glm
+	url = https://github.com/CrystalVapor/glm.git
+[submodule "library/glfw"]
+	path = library/glfw
+	url = https://github.com/CrystalVapor/glfw.git
