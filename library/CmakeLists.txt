@@ -1,5 +1,5 @@
-add_subdirectory(glfw-3.4)
-set(GLFW3_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glfw-3.4/include PARENT_SCOPE)
+add_subdirectory(glfw)
+set(GLFW3_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glfw/include PARENT_SCOPE)
 
 add_subdirectory(glad-gl3.3)
 set(GLAD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glad-gl3.3/include PARENT_SCOPE)
