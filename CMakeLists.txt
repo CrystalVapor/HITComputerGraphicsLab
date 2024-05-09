@@ -17,5 +17,11 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_executable(Lab1 src/Lab1.cpp
         src/Shader.cpp
-        src/Factory/ShaderFactory.cpp)
+        src/Factory/ShaderFactory.cpp
+        src/LabWindow.cpp)
 target_link_libraries(Lab1 glfw glad)
+
+add_executable(Lab2 src/Lab2.cpp src/Camera.cpp
+        src/Utils.cpp
+        src/LabWindow.cpp)
+target_link_libraries(Lab2 glfw glad glm::glm)
