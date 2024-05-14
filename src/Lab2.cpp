@@ -31,15 +31,15 @@ void CLab2Window::Init() {
 
     float DiamondVertices[] = {
             // vertex coords    // texture coords
-            0.5f, 0.0f, 0.0f,   0.0f, 0.0f,
-            0.0f, 0.5f, 0.0f,   1.0f, 0.0f,
-            0.0f, 0.0f, 0.5f,   1.0f, 1.0f,
-            -0.5f, 0.0f, 0.0f,  0.0f, 0.0f,
-            0.0f, -0.5f, 0.0f,  1.0f, 0.0f,
-            0.0f, 0.0f, -0.5f,  1.0f, 1.0f
+             0.5f,  0.0f,  0.0f,   0.0f, 0.0f,
+             0.0f,  0.5f,  0.0f,   1.0f, 0.0f,
+             0.0f,  0.0f,  0.5f,   1.0f, 1.0f,
+            -0.5f,  0.0f,  0.0f,   0.0f, 0.0f,
+             0.0f, -0.5f,  0.0f,   1.0f, 0.0f,
+             0.0f,  0.0f, -0.5f,   1.0f, 1.0f
     };
-    float DiamondIndices[] = {
-            1, 0, 2,
+    unsigned int DiamondIndices[] = {
+            2, 0, 1,
             3, 1, 2,
             4, 3, 2,
             0, 4, 2,
@@ -48,6 +48,51 @@ void CLab2Window::Init() {
             1, 3, 5,
             3, 4, 5,
     };
+
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
+
     glEnable(GL_DEPTH_TEST);
     glGenVertexArrays(1, &DiamondVAO);
     glGenBuffers(1, &DiamondVBO);
@@ -72,27 +117,29 @@ void CLab2Window::OnPaint() {
     const auto CurrentFrameTime = static_cast<float>(glfwGetTime());
     DeltaTime = CurrentFrameTime - LastFrameTime;
     LastFrameTime = CurrentFrameTime;
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, DiamondTexture->ID);
     glClearColor(0.2f,0.3f,0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    glBindVertexArray(DiamondVAO);
     glUseProgram(DiamondShader->ID);
     //DiamondShader->SetMat4Param("model", glm::mat4(1.0f));
     //DiamondShader->SetMat4Param("view", Camera->GetViewMatrix());
-    glm::mat4 model;
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    DiamondShader->SetMat4Param("model", model);
-    glm::mat4 view;
-    glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    DiamondShader->SetMat4Param("view", view);
-    DiamondShader->SetMat4Param("projection"
-        , glm::perspective(
+    auto model = glm::mat4(1.0f);
+    auto view = glm::mat4(1.0f);
+    auto projection = glm::mat4(1.0f);
+    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    projection = glm::perspective(
             glm::radians(45.0f),
             static_cast<float>(width)/static_cast<float>(height),
-            0.1f, 100.0f));
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, DiamondTexture->ID);
+            0.1f, 100.0f);
+    DiamondShader->SetMat4Param("model", model);
+    DiamondShader->SetMat4Param("view", view);
+    DiamondShader->SetMat4Param("projection", projection);
+    glBindVertexArray(DiamondVAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, DiamondEBO);
     glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
-    //printf("%f %f %f\n", Camera->Position.x, Camera->Position.y, Camera->Position.z);
+    //glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void CLab2Window::Begin() {
@@ -116,7 +163,6 @@ void CLab2Window::ProcessInput() {
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         MovementInput.x += 1.0f;
     Camera->ProcessMovementInput(MovementInput, DeltaTime);
-
 }
 
 void CLab2Window::Exit() {
