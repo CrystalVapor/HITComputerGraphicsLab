@@ -33,13 +33,15 @@ namespace CameraConstants {
 }
 
 struct FCameraRotationInputConfig{
+    explicit FCameraRotationInputConfig(GLboolean InInvertYaw = false, GLboolean InInvertPitch = false):
+    InvertYaw(InInvertYaw), InvertPitch(InInvertPitch) {};
     GLboolean InvertYaw = false;
     GLboolean InvertPitch = false;
 };
 
 class CCamera {
 public:
-    explicit CCamera(glm::vec3 InPosition = glm::vec3(0.0f, 0.0f, 0.0f),
+    explicit CCamera(glm::vec3 InPosition = glm::vec3(0.f, 10.f, 0.0f),
             glm::vec3 InRotation = glm::vec3(0.0f, -90.0f, 0.0f),
             float InZoom = CameraConstants::Zoom,
             float InSpeed = CameraConstants::Speed,
@@ -62,8 +64,8 @@ public:
     glm::mat4 GetViewMatrix() const;
 
     void ProcessMovementInput(glm::vec3 InputDirection, float DeltaTime);
-    void ProcessMouseMovement(float Yaw, float Pitch, FCameraRotationInputConfig CameraRotationInputConfig);
-    void ProcessMouseScroll(float DeltaZoom);
+    void ProcessCameraRotation(float Yaw, float Pitch, FCameraRotationInputConfig CameraRotationInputConfig);
+    void ProcessCameraZoom(float DeltaZoom);
 
     void AddYaw(float Yaw);
     void AddPitch(float Pitch);

@@ -1,83 +1,133 @@
 //
 // Created by m1504 on 24-5-9.
 //
+#include "Lab2.h"
 
 #include <iostream>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "Factory/ShaderFactory.h"
+#include "Factory/TextureFactory.h"
+#include "glm/vec3.hpp"
+#include "Camera.h"
 
-typedef unsigned int FGLBuffer_I;
-typedef unsigned int FGLVertexArray_I;
-
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+CLab2Window* CLab2Window::Instance = nullptr;
 
 int main(int argc, char *argv[]){
-    if(argc!=3){
-        std::cerr << "Usage: " << argv[0] << " [vertex shader path] [fragment shader path]" << std::endl;
-        return -1;
-    }
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH,
-                                          SCR_HEIGHT,
-                                          "LearnOpenGL",
-                                          nullptr,
-                                          nullptr);
-    if(window == nullptr){
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
-
-    // alloc and bind vertex array to context
-    FGLVertexArray_I vertexArrayObj;
-    glGenVertexArrays(1, &vertexArrayObj);
-    glBindVertexArray(vertexArrayObj);
-
-    // alloc and bind buffer to context
-    FGLBuffer_I vertexBufferObj;
-    glGenBuffers(1, &vertexBufferObj);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObj);
-
-    // set render data
-    float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f,  0.5f, 0.0f
-    };
-    glBufferData(GL_ARRAY_BUFFER,
-                 sizeof(vertices),
-                 vertices,
-                 GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3,
-                          GL_FLOAT, GL_FALSE,
-                          3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // create shader
-    auto shader = FShaderFactory::CreateShader(argv[1],
-                                               argv[2]);
-
-
-
-    // create window and call render loop
-    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-    while(!glfwWindowShouldClose(window)){
-        glClearColor(0.2f,0.3f,0.4f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    CLab2Window window;
+    window.Init();
+    window.Begin();
+    window.Exit();
     return 0;
+}
+
+void CLab2Window::Init() {
+    if(!Instance)
+        Instance = this;
+    CLabWindow::Init();
+    Camera = std::make_shared<CCamera>(glm::vec3(0.0f, 10.f, 0.0f));
+
+    float DiamondVertices[] = {
+            // vertex coords    // texture coords
+            0.5f, 0.0f, 0.0f,   0.0f, 0.0f,
+            0.0f, 0.5f, 0.0f,   1.0f, 0.0f,
+            0.0f, 0.0f, 0.5f,   1.0f, 1.0f,
+            -0.5f, 0.0f, 0.0f,  0.0f, 0.0f,
+            0.0f, -0.5f, 0.0f,  1.0f, 0.0f,
+            0.0f, 0.0f, -0.5f,  1.0f, 1.0f
+    };
+    float DiamondIndices[] = {
+            1, 0, 2,
+            3, 1, 2,
+            4, 3, 2,
+            0, 4, 2,
+            4, 0, 5,
+            0, 1, 5,
+            1, 3, 5,
+            3, 4, 5,
+    };
+    glEnable(GL_DEPTH_TEST);
+    glGenVertexArrays(1, &DiamondVAO);
+    glGenBuffers(1, &DiamondVBO);
+    glGenBuffers(1, &DiamondEBO);
+    glBindVertexArray(DiamondVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, DiamondVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(DiamondVertices), DiamondVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, DiamondEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(DiamondIndices), DiamondIndices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    DiamondShader = FShaderFactory::CreateShader("res/Shaders/Vertex/diamondVertex.glsl", "res/Shaders/Fragment/diamondFragment.glsl");
+    DiamondTexture = FTextureFactory::CreateTexture("res/Textures/diamondTexture.jpg");
+
+}
+
+void CLab2Window::OnPaint() {
+    CLabWindow::OnPaint();
+    const auto CurrentFrameTime = static_cast<float>(glfwGetTime());
+    DeltaTime = CurrentFrameTime - LastFrameTime;
+    LastFrameTime = CurrentFrameTime;
+    glClearColor(0.2f,0.3f,0.4f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glBindVertexArray(DiamondVAO);
+    glUseProgram(DiamondShader->ID);
+    //DiamondShader->SetMat4Param("model", glm::mat4(1.0f));
+    //DiamondShader->SetMat4Param("view", Camera->GetViewMatrix());
+    glm::mat4 model;
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    DiamondShader->SetMat4Param("model", model);
+    glm::mat4 view;
+    glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    DiamondShader->SetMat4Param("view", view);
+    DiamondShader->SetMat4Param("projection"
+        , glm::perspective(
+            glm::radians(45.0f),
+            static_cast<float>(width)/static_cast<float>(height),
+            0.1f, 100.0f));
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, DiamondTexture->ID);
+    glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
+    //printf("%f %f %f\n", Camera->Position.x, Camera->Position.y, Camera->Position.z);
+}
+
+void CLab2Window::Begin() {
+    glfwSetCursorPosCallback(window, OnMouseMove);
+    glfwSetScrollCallback(window, OnMouseScroll);
+    glUseProgram(DiamondShader->ID);
+    CLabWindow::Begin();
+}
+
+void CLab2Window::ProcessInput() {
+    CLabWindow::ProcessInput();
+    glm::vec3 MovementInput(0.0f);
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+    if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        MovementInput.z += 1.0f;
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        MovementInput.z -= 1.0f;
+    if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        MovementInput.x -= 1.0f;
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        MovementInput.x += 1.0f;
+    Camera->ProcessMovementInput(MovementInput, DeltaTime);
+
+}
+
+void CLab2Window::Exit() {
+    CLabWindow::Exit();
+}
+
+void CLab2Window::OnMouseMove(GLFWwindow *Window, double xpos, double ypos) {
+    auto f_camera_rotation_input_config = FCameraRotationInputConfig(false, true);
+    Instance->Camera->ProcessCameraRotation(xpos, ypos, f_camera_rotation_input_config);
+}
+
+void CLab2Window::OnMouseScroll(GLFWwindow *Window, double xoffset, double yoffset) {
+    Instance->Camera->ProcessCameraZoom(static_cast<float>(yoffset));
 }

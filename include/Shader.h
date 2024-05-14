@@ -4,6 +4,7 @@
 
 #ifndef COMPUTERGRAPHICSLAB_SHADER_H
 #define COMPUTERGRAPHICSLAB_SHADER_H
+#include "glm/fwd.hpp"
 
 typedef unsigned int FShader_I;
 class FShader {
@@ -12,8 +13,11 @@ public:
     FShader_I ID;
     FShader(const FShader& shader);
     FShader& operator=(const FShader& shader);
-protected:
     FShader(const char* vertexPath, const char* fragmentPath);
+
+    void SetIntParam(const std::string& name, int value) const;
+    void SetMat4Param(const std::string& name, const glm::mat4 & value) const;
+
 };
 
 

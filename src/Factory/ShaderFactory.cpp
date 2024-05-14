@@ -9,5 +9,5 @@
 std::shared_ptr<FShader> FShaderFactory::CreateShader(const char *vertexPath, const char *fragmentPath) {
     // we simply call its constructor
     // since there's no morphism in shader class
-    return std::shared_ptr<FShader>(new FShader(vertexPath, fragmentPath));
+    return std::make_shared<FShader>(vertexPath, fragmentPath);
 }

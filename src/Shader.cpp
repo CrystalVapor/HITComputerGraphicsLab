@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Shader.h"
 #include "glad/glad.h"
+#include "glm/gtc/type_ptr.hpp"
 
 FShader::FShader(const char *vertexPath, const char *fragmentPath) {
     std::string vertexCode, fragmentCode;
@@ -71,6 +72,14 @@ FShader::FShader(const FShader &shader) {
 }
 
 FShader &FShader::operator=(const FShader &shader) = default;
+
+void FShader::SetIntParam(const std::string &name, int value) const {
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+void FShader::SetMat4Param(const std::string &name, const glm::mat4 & value) const {
+    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+}
 
 
 

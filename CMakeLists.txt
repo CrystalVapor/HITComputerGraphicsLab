@@ -15,13 +15,16 @@ add_subdirectory(library)
 include_directories(${GLFW3_INCLUDE_DIR} ${GLAD_INCLUDE_DIR} ${GLM_INCLUDE_DIR} ${STB_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
+add_library(Factories src/Shader.cpp src/Factory/ShaderFactory.cpp
+        src/Factory/TextureFactory.cpp
+        include/Factory/TextureFactory.h
+        src/Texture.cpp
+        include/Texture.h)
+
 add_executable(Lab1 src/Lab1.cpp
-        src/Shader.cpp
-        src/Factory/ShaderFactory.cpp
         src/LabWindow.cpp)
-target_link_libraries(Lab1 glfw glad)
+target_link_libraries(Lab1 glfw glad Factories)
 
 add_executable(Lab2 src/Lab2.cpp src/Camera.cpp
-        src/Utils.cpp
         src/LabWindow.cpp)
-target_link_libraries(Lab2 glfw glad glm::glm)
+target_link_libraries(Lab2 glfw glad glm::glm Factories)

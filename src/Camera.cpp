@@ -2,8 +2,10 @@
 // Created by m1504 on 24-5-9.
 //
 #include "Camera.h"
+
+#include <cstdio>
+
 #include "glm/ext.hpp"
-#include "glm/gtx/quaternion.hpp"
 
 glm::vec3 CCamera::GetPosition() const {
     return Position;
@@ -14,7 +16,7 @@ glm::vec3 CCamera::GetFront() const {
 }
 
 glm::vec3 CCamera::GetCameraUp() const {
-    glm::mat4 RotationMatrix = glm::toMat4(glm::quat(Rotation));
+    glm::mat4 RotationMatrix = static_cast<glm::mat4>(glm::quat(Rotation));
     return {RotationMatrix * glm::vec4(CameraConstants::WorldUp, 0.0f)};
 }
 
@@ -33,7 +35,7 @@ glm::quat CCamera::GetRotation() const {
 }
 
 glm::vec3 CCamera::GetDirection() const {
-    glm::mat4 RotationMatrix = glm::toMat4(glm::quat(Rotation));
+    glm::mat4 RotationMatrix = static_cast<glm::mat4>(glm::quat(Rotation));
     return {RotationMatrix * glm::vec4(CameraConstants::WorldFront, 0.0f)};
 }
 
@@ -42,18 +44,19 @@ glm::mat4 CCamera::GetViewMatrix() const {
 }
 
 void CCamera::ProcessMovementInput(const glm::vec3 InputDirection, float DeltaTime) {
-    const glm::vec3 NormalizedDirection = glm::normalize(InputDirection);
-    Position += NormalizedDirection * Speed * DeltaTime;
+    //const glm::vec3 NormalizedDirection = glm::normalize(InputDirection);
+    Position += InputDirection * Speed * DeltaTime;
+    //printf("%f %f %f\n", InputDirection.x, InputDirection.y, InputDirection.z);
 }
 
-void CCamera::ProcessMouseMovement(float Yaw, float Pitch, FCameraRotationInputConfig CameraRotationInputConfig) {
+void CCamera::ProcessCameraRotation(float Yaw, float Pitch, FCameraRotationInputConfig CameraRotationInputConfig) {
     const float YawOffset = CameraRotationInputConfig.InvertYaw ? -Yaw : Yaw;
     const float PitchOffset = CameraRotationInputConfig.InvertPitch ? -Pitch : Pitch;
     AddYaw(YawOffset * Sensitivity);
     AddPitch(PitchOffset * Sensitivity);
 }
 
-void CCamera::ProcessMouseScroll(float DeltaZoom) {
+void CCamera::ProcessCameraZoom(float DeltaZoom) {
     Zoom = glm::clamp(Zoom - DeltaZoom, 1.0f, 90.0f);
 }
 
