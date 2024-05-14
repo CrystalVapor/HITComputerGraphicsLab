@@ -5,6 +5,9 @@
 #ifndef COMPUTERGRAPHICSLAB_CAMERA_H
 #define COMPUTERGRAPHICSLAB_CAMERA_H
 
+#include <Camera.h>
+#include <Camera.h>
+
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -19,7 +22,7 @@ enum ECameraMovementInput {
 
 namespace CameraConstants {
     constexpr float Speed = 2.5f;
-    constexpr float Sensitivity = 0.1f;
+    constexpr float Sensitivity = 0.2f;
     constexpr float Zoom = 45.0f;
     const glm::vec3 WorldFront(0.0f, 0.0f, -1.0f);
     const glm::vec3 WorldRight(1.0f, 0.0f, 0.0f);
@@ -42,7 +45,7 @@ struct FCameraRotationInputConfig{
 class CCamera {
 public:
     explicit CCamera(glm::vec3 InPosition = glm::vec3(0.f, 10.f, 0.0f),
-            glm::vec3 InRotation = glm::vec3(0.0f, -90.0f, 0.0f),
+            glm::vec3 InRotation = glm::vec3(0.0f, 0.0f, 0.0f),
             float InZoom = CameraConstants::Zoom,
             float InSpeed = CameraConstants::Speed,
             float InSensitivity = CameraConstants::Sensitivity)
@@ -53,17 +56,20 @@ public:
      Sensitivity(InSensitivity) {};
 
     glm::vec3 GetPosition() const;
-    glm::vec3 GetFront() const;
+    glm::vec3 GetCameraFront() const;
     glm::vec3 GetCameraUp() const;
     glm::vec3 GetCameraRight() const;
 
     glm::quat GetRotationQuaternion() const;
 
-    glm::quat GetRotation() const;
+    glm::vec3 GetRotation() const;
+    glm::vec3 GetRotationRadians() const;
     glm::vec3 GetDirection() const;
     glm::mat4 GetViewMatrix() const;
 
-    void ProcessMovementInput(glm::vec3 InputDirection, float DeltaTime);
+    glm::mat4 GetLocalToWorldMatrix() const;
+
+    void ProcessMovementInput(glm::vec3 InputLocalDirection, float DeltaTime);
     void ProcessCameraRotation(float Yaw, float Pitch, FCameraRotationInputConfig CameraRotationInputConfig);
     void ProcessCameraZoom(float DeltaZoom);
 
@@ -71,10 +77,12 @@ public:
     void AddPitch(float Pitch);
 
     glm::vec3 Position;
-    glm::vec3 Rotation/*In GLM, Euler rotation is Roll Pitch and Yaw*/;
+    glm::vec3 Rotation/*In GLM, Euler rotation is Pitch Yaw and Roll*/;
     float Zoom;
     float Speed;
     float Sensitivity;
+    float LastYaw = 0.0f;
+    float LastPitch = 0.0f;
 };
 
 

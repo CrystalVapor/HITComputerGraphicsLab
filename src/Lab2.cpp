@@ -27,7 +27,7 @@ void CLab2Window::Init() {
     if(!Instance)
         Instance = this;
     CLabWindow::Init();
-    Camera = std::make_shared<CCamera>(glm::vec3(0.0f, 10.f, 0.0f));
+    Camera = std::make_shared<CCamera>(glm::vec3(0.0f, 0.f, 0.0f));
 
     float DiamondVertices[] = {
             // vertex coords    // texture coords
@@ -48,51 +48,6 @@ void CLab2Window::Init() {
             1, 3, 5,
             3, 4, 5,
     };
-
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-
     glEnable(GL_DEPTH_TEST);
     glGenVertexArrays(1, &DiamondVAO);
     glGenBuffers(1, &DiamondVBO);
@@ -127,8 +82,14 @@ void CLab2Window::OnPaint() {
     auto model = glm::mat4(1.0f);
     auto view = glm::mat4(1.0f);
     auto projection = glm::mat4(1.0f);
-    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    view = Camera->GetViewMatrix();
+    //printf("%f, %f, %f\n", Camera->Position.x, Camera->Position.y, Camera->Position.z);
+    auto rot = Camera->GetRotation();
+    auto dir = Camera->GetDirection();
+    printf("(%f, %f, %f) (%f, %f, %f)\n", dir.x, dir.y, dir.z, rot.x, rot.y, rot.z);
+    printf("LY: %f, LP: %f\n", Camera->LastYaw, Camera->LastPitch);
     projection = glm::perspective(
             glm::radians(45.0f),
             static_cast<float>(width)/static_cast<float>(height),
@@ -155,9 +116,9 @@ void CLab2Window::ProcessInput() {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        MovementInput.z += 1.0f;
-    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         MovementInput.z -= 1.0f;
+    if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        MovementInput.z += 1.0f;
     if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         MovementInput.x -= 1.0f;
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
@@ -170,7 +131,7 @@ void CLab2Window::Exit() {
 }
 
 void CLab2Window::OnMouseMove(GLFWwindow *Window, double xpos, double ypos) {
-    auto f_camera_rotation_input_config = FCameraRotationInputConfig(false, true);
+    auto f_camera_rotation_input_config = FCameraRotationInputConfig(true, true);
     Instance->Camera->ProcessCameraRotation(xpos, ypos, f_camera_rotation_input_config);
 }
 
