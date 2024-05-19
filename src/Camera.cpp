@@ -26,10 +26,6 @@ glm::vec3 CCamera::GetCameraRight() const {
     return glm::normalize(glm::cross(Front, Up));
 }
 
-glm::quat CCamera::GetRotationQuaternion() const {
-    return {glm::radians(Rotation)};
-}
-
 glm::vec3 CCamera::GetRotation() const {
     return Rotation;
 }

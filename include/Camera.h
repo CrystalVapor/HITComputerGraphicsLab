@@ -6,7 +6,7 @@
 #define COMPUTERGRAPHICSLAB_CAMERA_H
 
 #include <Camera.h>
-#include <Camera.h>
+
 
 #include "glad/glad.h"
 #include "glm/glm.hpp"
@@ -60,8 +60,6 @@ public:
     glm::vec3 GetCameraUp() const;
     glm::vec3 GetCameraRight() const;
 
-    glm::quat GetRotationQuaternion() const;
-
     glm::vec3 GetRotation() const;
     glm::vec3 GetRotationRadians() const;
     glm::vec3 GetDirection() const;
@@ -87,3 +85,4 @@ public:
 
 
 #endif //COMPUTERGRAPHICSLAB_CAMERA_H
+
