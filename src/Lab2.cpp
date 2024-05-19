@@ -88,8 +88,8 @@ void CLab2Window::OnPaint() {
     //printf("%f, %f, %f\n", Camera->Position.x, Camera->Position.y, Camera->Position.z);
     auto rot = Camera->GetRotation();
     auto dir = Camera->GetDirection();
-    printf("(%f, %f, %f) (%f, %f, %f)\n", dir.x, dir.y, dir.z, rot.x, rot.y, rot.z);
-    printf("LY: %f, LP: %f\n", Camera->LastYaw, Camera->LastPitch);
+    //printf("(%f, %f, %f) (%f, %f, %f)\n", dir.x, dir.y, dir.z, rot.x, rot.y, rot.z);
+    //printf("LY: %f, LP: %f\n", Camera->LastYaw, Camera->LastPitch);
     projection = glm::perspective(
             glm::radians(45.0f),
             static_cast<float>(width)/static_cast<float>(height),
