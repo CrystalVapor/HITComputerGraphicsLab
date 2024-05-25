@@ -15,9 +15,11 @@ public:
     FShader& operator=(const FShader& shader);
     FShader(const char* vertexPath, const char* fragmentPath);
 
+    void Activate() const;
+
     void SetIntParam(const std::string& name, int value) const;
     void SetMat4Param(const std::string& name, const glm::mat4 & value) const;
-
+    void SetVec3Param(const std::string& name, const glm::vec3 & value) const;
 };
 
 

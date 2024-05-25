@@ -67,6 +67,10 @@ FShader::FShader(const char *vertexPath, const char *fragmentPath) {
     glDeleteShader(fragmentShaderObj);
 }
 
+void FShader::Activate() const {
+    glUseProgram(ID);
+}
+
 FShader::FShader(const FShader &shader) {
     ID = shader.ID;
 }
@@ -79,6 +83,10 @@ void FShader::SetIntParam(const std::string &name, int value) const {
 
 void FShader::SetMat4Param(const std::string &name, const glm::mat4 & value) const {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+}
+
+void FShader::SetVec3Param(const std::string &name, const glm::vec3 &value) const {
+    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(value));
 }
 
 
