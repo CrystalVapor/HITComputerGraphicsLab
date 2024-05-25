@@ -57,10 +57,15 @@ void CCamera::ProcessMovementInput(const glm::vec3 InputLocalDirection, float De
 }
 
 void CCamera::ProcessCameraRotation(float Yaw, float Pitch, FCameraRotationInputConfig CameraRotationInputConfig) {
+    static bool bIsFirstUpdate = true;
     const float rDeltaYaw = Yaw-LastYaw;
     const float rDeltaPitch = Pitch-LastPitch;
     LastPitch = Pitch;
     LastYaw = Yaw;
+    if(bIsFirstUpdate) {
+        bIsFirstUpdate = false;
+        return;
+    }
     const float deltaYaw = CameraRotationInputConfig.InvertYaw ? -rDeltaYaw : rDeltaYaw;
     const float deltaPitch = CameraRotationInputConfig.InvertPitch ? -rDeltaPitch : rDeltaPitch;
     AddYaw(deltaYaw * Sensitivity);
@@ -85,4 +90,11 @@ void CCamera::AddYaw(const float Yaw) {
 void CCamera::AddPitch(const float Pitch) {
     float& p = Rotation.x;
     p = glm::clamp(p + Pitch, -89.0f, 89.0f);
+}
+
+void CCamera::LookAt(glm::vec3 Target) {
+    const glm::vec3 LookDirection = glm::normalize(Target - Position);
+    const float Yaw = glm::degrees(atan2(LookDirection.z, LookDirection.x));
+    const float Pitch = glm::degrees(asin(LookDirection.y));
+    Rotation = {Pitch, Yaw, 0.0f};
 }

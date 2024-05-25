@@ -74,6 +74,8 @@ public:
     void AddYaw(float Yaw);
     void AddPitch(float Pitch);
 
+    void LookAt(glm::vec3 Target);
+
     glm::vec3 Position;
     glm::vec3 Rotation/*In GLM, Euler rotation is Pitch Yaw and Roll*/;
     float Zoom;
