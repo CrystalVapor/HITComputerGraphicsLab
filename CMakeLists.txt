@@ -19,12 +19,22 @@ add_library(Factories src/Shader.cpp src/Factory/ShaderFactory.cpp
         src/Factory/TextureFactory.cpp
         include/Factory/TextureFactory.h
         src/Texture.cpp
-        include/Texture.h)
+        include/Texture.h
+        include/Lab3.h)
 
 add_executable(Lab1 src/Lab1.cpp
         src/LabWindow.cpp)
 target_link_libraries(Lab1 glfw glad Factories)
 
 add_executable(Lab2 src/Lab2.cpp src/Camera.cpp
-        src/LabWindow.cpp)
+        src/LabWindow.cpp
+        src/LabWindow_WithCamera.cpp)
 target_link_libraries(Lab2 glfw glad glm::glm Factories)
+
+add_library(Window_Camera src/LabWindow.cpp src/Camera.cpp src/LabWindow_WithCamera.cpp)
+
+add_executable(Lab3 src/Lab3.cpp
+        src/LabWindow.cpp
+        src/LabWindow_WithCamera.cpp
+        src/Camera.cpp)
+target_link_libraries(Lab3 glfw glad glm::glm Factories)
