@@ -18,8 +18,7 @@ CLab2Window* CLab2Window::Instance = nullptr;
 int main(int argc, char *argv[]){
     CLab2Window window;
     window.Init();
-    window.Begin();
-    window.Exit();
+    window.Run();
     return 0;
 }
 
@@ -77,20 +76,9 @@ void CLab2Window::OnPaint() {
     glClearColor(0.2f,0.3f,0.4f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glUseProgram(DiamondShader->ID);
-    //DiamondShader->SetMat4Param("model", glm::mat4(1.0f));
-    //DiamondShader->SetMat4Param("view", Camera->GetViewMatrix());
     auto model = glm::mat4(1.0f);
-    auto view = glm::mat4(1.0f);
-    auto projection = glm::mat4(1.0f);
-    //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-    //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    view = Camera->GetViewMatrix();
-    //printf("%f, %f, %f\n", Camera->Position.x, Camera->Position.y, Camera->Position.z);
-    auto rot = Camera->GetRotation();
-    auto dir = Camera->GetDirection();
-    //printf("(%f, %f, %f) (%f, %f, %f)\n", dir.x, dir.y, dir.z, rot.x, rot.y, rot.z);
-    //printf("LY: %f, LP: %f\n", Camera->LastYaw, Camera->LastPitch);
-    projection = glm::perspective(
+    auto view = Camera->GetViewMatrix();
+    auto projection = glm::perspective(
             glm::radians(45.0f),
             static_cast<float>(width)/static_cast<float>(height),
             0.1f, 100.0f);
@@ -100,7 +88,6 @@ void CLab2Window::OnPaint() {
     glBindVertexArray(DiamondVAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, DiamondEBO);
     glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
-    //glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void CLab2Window::Begin() {

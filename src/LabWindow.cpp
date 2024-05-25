@@ -34,13 +34,12 @@ void CLabWindow::Init() {
     glViewport(0, 0, width, height);
 }
 
+void CLabWindow::Run() {
+    _Begin();
+}
+
 void CLabWindow::Begin() {
-    while(!glfwWindowShouldClose(window)){
-        ProcessInput();
-        OnPaint();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+
 }
 
 void CLabWindow::OnPaint() {
@@ -61,5 +60,15 @@ void CLabWindow::LoadGLFW() {
 void CLabWindow::LoadGLAD() {
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
         std::cout << "Failed to initialize GLAD" << std::endl;
+    }
+}
+
+void CLabWindow::_Begin() {
+    Begin();
+    while(!glfwWindowShouldClose(window)){
+        ProcessInput();
+        OnPaint();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 }

@@ -10,8 +10,8 @@ class CLabWindow {
 public:
     virtual ~CLabWindow();
     virtual void Init();
-    virtual void Begin();
-    virtual void OnPaint();
+    virtual void Run();
+
     virtual void Exit();
 
     virtual void ProcessInput();
@@ -25,7 +25,11 @@ public:
 
     struct GLFWwindow *window;
 protected:
+    virtual void Begin();
+    virtual void OnPaint();
     static bool bGLFWInitialized;
+private:
+    void _Begin();
 };
 
 #endif //LABWINDOW_H

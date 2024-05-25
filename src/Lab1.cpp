@@ -13,8 +13,7 @@ int main(int argc, char *argv[]){
     CLab1Window window;
     window.SetShaderPath(argv[1], argv[2]);
     window.Init();
-    window.Begin();
-    window.Exit();
+    window.Run();
     return 0;
 }
 
