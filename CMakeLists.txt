@@ -38,3 +38,9 @@ add_executable(Lab3 src/Lab3.cpp
         src/LabWindow_WithCamera.cpp
         src/Camera.cpp)
 target_link_libraries(Lab3 glfw glad glm::glm Factories)
+
+add_executable(Lab4 src/Lab4.cpp
+        src/LabWindow.cpp
+        src/LabWindow_WithCamera.cpp
+        src/Camera.cpp)
+target_link_libraries(Lab4 glfw glad glm::glm Factories)
