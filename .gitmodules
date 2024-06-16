@@ -7,3 +7,6 @@
 [submodule "library/glfw"]
 	path = library/glfw
 	url = https://github.com/CrystalVapor/glfw.git
+[submodule "library/Vulkan-Headers"]
+	path = library/Vulkan-Headers
+	url = git@github.com:KhronosGroup/Vulkan-Headers.git
